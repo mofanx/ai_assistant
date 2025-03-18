@@ -17,20 +17,30 @@ class TTSClient:
     设计为可以轻松集成到其他项目中，并解决了事件循环绑定问题。
     """
     
-    def __init__(self, tts_base_url=None, tts_api_key=None):
+    def __init__(self, tts_base_url=None, tts_api_key=None, tts_engine="api", tts_server_url=None):
         """初始化TTS客户端
         
         Args:
             tts_base_url: TTS API基础URL，如果为None则从环境变量中获取
             tts_api_key: TTS API密钥，如果为None则从环境变量中获取
+            tts_engine: TTS引擎类型，可选值为 "api"(默认) 或 "server"
+            tts_server_url: TTS服务器URL，仅当tts_engine为"server"时有效，默认为 TTS_SERVER_BASE_URL
         """
-        # 基础配置
+        # 引擎类型配置
+        self.tts_engine = tts_engine
+        self.tts_server_url = tts_server_url or os.getenv("TTS_SERVER_BASE_URL")
+        
+        # API引擎基础配置
         self.base_url = tts_base_url or os.getenv("OTHER_TTS_BASE_URL")
         self.api_key = tts_api_key or os.getenv("OTHER_TTS_API_KEY")
 
         print("=== TTS客户端初始化 ===")
-        print(f"Base URL: {self.base_url}")
-        print(f"API Key: {self.api_key}")
+        print(f"引擎类型: {self.tts_engine}")
+        if self.tts_engine == "api":
+            print(f"Base URL: {self.base_url}")
+            print(f"API Key: {self.api_key}")
+        else:
+            print(f"TTS服务器URL: {self.tts_server_url}")
 
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -180,13 +190,14 @@ class TTSClient:
         except Exception as e:
             print(f"语音生成异常: {e}")
 
-    async def generate_speech(self, text: str, model: str = "zh-CN-XiaoxiaoMultilingualNeural", voice: str = "xiaoxiao") -> bool:
-        """调用API生成语音数据
+    async def generate_speech_server(self, text: str, engine: str = "com.github.jing332.tts_server_android", rate: int = 50, pitch: int = 100) -> bool:
+        """使用TTS服务器生成语音数据（异步实现）
         
         Args:
             text: 要转换为语音的文本
-            model: 使用的TTS模型
-            voice: 使用的语音
+            engine: TTS引擎名称
+            rate: 语速参数，范围通常为0-100
+            pitch: 音调参数，范围通常为0-100
             
         Returns:
             bool: 是否成功生成语音数据
@@ -195,25 +206,21 @@ class TTSClient:
         if not text or self.stop_flag or not self.speech_task:
             return False
             
-        # 准备API请求参数
-        payload = {
-            "model": model,
-            "voice": voice,
-            "input": text
-        }
-        
         try:
-            # 发送API请求
+            # 定义请求参数
+            params = {
+                "text": text,
+                "engine": engine,
+                "rate": str(rate),  # 确保参数是字符串类型
+                "pitch": str(pitch)  # 确保参数是字符串类型
+            }
+            
+            # 使用aiohttp发送GET请求并获取返回的音频数据
             async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    f"{self.base_url}/audio/speech", 
-                    headers=self.headers, 
-                    json=payload,
-                    timeout=10
-                ) as response:
-                    # 处理响应
+                async with session.get(self.tts_server_url, params=params, timeout=10) as response:
+                    # 检查请求是否成功
                     if response.status == 200:
-                        # 读取音频数据
+                        # 从内存中加载音频数据
                         audio_data = io.BytesIO(await response.read())
                         
                         # 如果在读取过程中收到停止信号，则丢弃数据
@@ -223,17 +230,80 @@ class TTSClient:
                             
                         # 将音频数据放入队列
                         await self.speech_task.put(audio_data)
-                        print(f"已生成语音: {text[:20]}...")
+                        print(f"已生成语音(服务器): {text[:20]}...")
                         return True
                     else:
-                        print(f"API错误: {response.status}, {await response.text()}")
+                        print(f"TTS服务器错误: {response.status}, {await response.text()}")
                         return False
         except aiohttp.ClientError as e:
-            print(f"API连接异常: {e}")
+            print(f"TTS服务器连接异常: {e}")
             return False
         except Exception as e:
-            print(f"语音生成请求异常: {e}")
+            print(f"TTS服务器请求异常: {e}")
             return False
+
+    async def generate_speech(self, text: str, model: str = "zh-CN-XiaoxiaoMultilingualNeural", voice: str = "xiaoxiao", 
+                             engine: str = "com.github.jing332.tts_server_android", rate: int = 50, pitch: int = 100) -> bool:
+        """调用API或服务器生成语音数据
+        
+        Args:
+            text: 要转换为语音的文本
+            model: 使用的TTS模型 (API引擎使用)
+            voice: 使用的语音 (API引擎使用)
+            engine: TTS服务器引擎名称 (服务器引擎使用)
+            rate: 语速参数，范围通常为0-100 (服务器引擎使用)
+            pitch: 音调参数，范围通常为0-100 (服务器引擎使用)
+            
+        Returns:
+            bool: 是否成功生成语音数据
+        """
+        # 检查参数和状态
+        if not text or self.stop_flag or not self.speech_task:
+            return False
+        
+        # 根据引擎类型选择不同的处理方式
+        if self.tts_engine == "server":
+            return await self.generate_speech_server(text, engine, rate, pitch)
+        else:  # 默认使用API引擎
+            # 准备API请求参数
+            payload = {
+                "model": model,
+                "voice": voice,
+                "input": text
+            }
+            
+            try:
+                # 发送API请求
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(
+                        f"{self.base_url}/audio/speech", 
+                        headers=self.headers, 
+                        json=payload,
+                        timeout=10
+                    ) as response:
+                        # 处理响应
+                        if response.status == 200:
+                            # 读取音频数据
+                            audio_data = io.BytesIO(await response.read())
+                            
+                            # 如果在读取过程中收到停止信号，则丢弃数据
+                            if self.stop_flag:
+                                audio_data.close()
+                                return False
+                                
+                            # 将音频数据放入队列
+                            await self.speech_task.put(audio_data)
+                            print(f"已生成语音(API): {text[:20]}...")
+                            return True
+                        else:
+                            print(f"API错误: {response.status}, {await response.text()}")
+                            return False
+            except aiohttp.ClientError as e:
+                print(f"API连接异常: {e}")
+                return False
+            except Exception as e:
+                print(f"语音生成请求异常: {e}")
+                return False
 
     async def async_play_speech(self):
         """从语音队列获取音频数据并播放
@@ -393,8 +463,8 @@ class TTSClient:
         
         # 初始化队列 - 确保与当前事件循环绑定
         self._loop = asyncio.get_running_loop()
-        self.segment_task = asyncio.Queue(3)
-        self.speech_task = asyncio.Queue(3)
+        self.segment_task = asyncio.Queue(2)
+        self.speech_task = asyncio.Queue(2)
         
         
         try:
@@ -467,8 +537,11 @@ if __name__ == "__main__":
     # 设置环境变量
     # os.environ["PIPEWIRE_LATENCY"] = "128/48000"
     
-    # 创建TTS客户端
+    # 创建TTS客户端 (默认使用API引擎)
     tts_client = TTSClient()
+    
+    # 如果要使用TTS服务器引擎，可以这样初始化：
+    # tts_client = TTSClient(tts_engine="server", tts_server_url="http://192.168.123.181:8325/api/tts")
     
     print("=== TTS客户端示例 ===")
     print("1. 按下 f9+5 启动TTS（从剪贴板获取文本）")

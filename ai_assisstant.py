@@ -53,9 +53,9 @@ def main():
     # aliyun_assistant = AliyunAssistant(model_name="qwen-max")
     aliyun_assistant = OpenAIAssistant(model_name="qwen-max", provider="aliyun")
     aliyun_web_assistant = OpenAIAssistant(model_name="qwen-max", provider="aliyun", enable_search=True)
-    tts_client = TTSClient()
-    chat_with_tts_stream = ChatWithTTSStream(model_name="qwen-max", provider="aliyun")
-    chat_with_tts_no_stream = ChatWithTTSNoStream(model_name="qwen-max", provider="aliyun")
+    tts_client = TTSClient(tts_engine="server")
+    chat_with_tts_stream = ChatWithTTSStream(model_name="qwen-max", provider="aliyun", tts_engine="server")
+    chat_with_tts_no_stream = ChatWithTTSNoStream(model_name="qwen-max", provider="aliyun", tts_engine="server")
     
 
 

@@ -18,7 +18,7 @@ from .tts_client import TTSClient
 class ChatWithTTSStream(AIAssistantBase):
     """基于OpenAI API的AI助手实现"""
     
-    def __init__(self, model_name="ERNIE-Speed-128K", provider="default", enable_search=False ,enable_stream=True):
+    def __init__(self, model_name="ERNIE-Speed-128K", provider="default", enable_search=False ,enable_stream=True, tts_engine="server"):
         """初始化OpenAI助手
         
         Args:
@@ -41,7 +41,7 @@ class ChatWithTTSStream(AIAssistantBase):
         self.enable_stream = enable_stream
         self.segments = []
         self.response = ""
-        self.tts_client = TTSClient()
+        self.tts_client = TTSClient(tts_engine=tts_engine)
 
         # 分段标点符号
         self.end_marks = ["。","！","？","!","?","\n"]

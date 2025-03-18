@@ -16,7 +16,7 @@ from .tts_client import TTSClient
 class ChatWithTTSNoStream(AIAssistantBase):
     """基于OpenAI API的AI助手实现"""
     
-    def __init__(self, model_name="hunyuan-lite", provider="default", enable_search=False ,enable_stream=False):
+    def __init__(self, model_name="hunyuan-lite", provider="default", enable_search=False ,enable_stream=False, tts_engine="server"):
         """初始化OpenAI助手
         
         Args:
@@ -40,7 +40,7 @@ class ChatWithTTSNoStream(AIAssistantBase):
         self.segments = []
         self.response = ""
         self.reply = ""
-        self.tts_client = TTSClient()
+        self.tts_client = TTSClient(tts_engine=tts_engine)
         # 分段标点符号
         self.end_marks = ["。","！","？","!","?","\n"]
 

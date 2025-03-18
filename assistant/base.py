@@ -70,7 +70,7 @@ def type_result(text):
 
         # 还原剪贴板
         if config_restore:
-            time.sleep(0.1)
+            time.sleep(0.05)
             pyclip.copy(temp)
 
     # 模拟打印

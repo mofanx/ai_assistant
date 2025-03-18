@@ -9,16 +9,21 @@ from .base import AIAssistantBase, get_clipboard_content, type_result, cancel_cu
 from .qwen_model import QwenAssistant
 from .qwq_model import QWQAssistant
 from .openai_model import OpenAIAssistant
-from .openai_tts import OpenAITTS
+from .tts_client import TTSClient
+from .chat_with_tts_stream import ChatWithTTSStream
+from .chat_with_tts_no_stream import ChatWithTTSNoStream
+
+
 
 __all__ = [
-    'AIAssistantBase',
-    'QwenAssistant',
-    'QWQAssistant',
-    'OpenAIAssistant',
-    'OpenAITTS',
     'get_clipboard_content',
     'type_result',
     'cancel_current_chat',
-    'clear_possible_char'
+    'clear_possible_char',
+    'QwenAssistant',
+    'QWQAssistant',
+    'OpenAIAssistant',
+    'TTSClient',
+    'ChatWithTTSStream',
+    'ChatWithTTSNoStream'
 ]

@@ -19,12 +19,15 @@ import argparse
 # 第三方库
 import keyboard
 import pygame
+import asyncio
+import threading
 
 # 导入自定义模块
 from assistant import (
     get_clipboard_content, type_result, cancel_current_chat, clear_possible_char,
-    OpenAIAssistant, QwenAssistant, QWQAssistant, OpenAITTS
+    OpenAIAssistant, QwenAssistant, QWQAssistant, TTSClient, ChatWithTTSStream, ChatWithTTSNoStream
 )
+
 
 # =========================
 # 主函数
@@ -50,7 +53,11 @@ def main():
     # aliyun_assistant = AliyunAssistant(model_name="qwen-max")
     aliyun_assistant = OpenAIAssistant(model_name="qwen-max", provider="aliyun")
     aliyun_web_assistant = OpenAIAssistant(model_name="qwen-max", provider="aliyun", enable_search=True)
-    tts_assistant = OpenAITTS()
+    tts_client = TTSClient()
+    chat_with_tts_stream = ChatWithTTSStream(model_name="qwen-max", provider="aliyun")
+    chat_with_tts_no_stream = ChatWithTTSNoStream(model_name="qwen-max", provider="aliyun")
+    
+
 
     
     print("=== AI助手已启动 ===")
@@ -64,22 +71,29 @@ def main():
     print("f9+z: 调用Zhipu模型")
     print("f9+a: 调用Aliyun模型")
     print("f9+l: 调用Aliyun Web模型")
-    print("f9+1: 调用TTS模型")
+    print("f9+1: 调用TTS模型")    
+    print("esc+1: 停止TTS")    
+    print("f9+2: 调用流式TTS")    
+    print("f9+3: 调用非流式TTS")    
     print("esc: 取消当前对话输出")
     print("esc+f9: 退出程序")
     
     # 注册快捷键
-    keyboard.add_hotkey('f9+o', lambda: [clear_possible_char(), openai_assistant.chat()])
-    keyboard.add_hotkey('f9+g', lambda: [clear_possible_char(), gemini_assistant.chat()])
-    keyboard.add_hotkey('f9+x', lambda: [clear_possible_char(), grok_assistant.chat()])
-    keyboard.add_hotkey('f9+q', lambda: [clear_possible_char(), qwen_assistant.chat_thread()])
-    keyboard.add_hotkey('f9+w', lambda: [clear_possible_char(), qwq_assistant.chat_thread()])
-    keyboard.add_hotkey('f9+b', lambda: [clear_possible_char(), baidu_assistant.chat()])
-    keyboard.add_hotkey('f9+z', lambda: [clear_possible_char(), zhipu_assistant.chat()])
-    keyboard.add_hotkey('f9+a', lambda: [clear_possible_char(), aliyun_assistant.chat()])
-    keyboard.add_hotkey('f9+l', lambda: [clear_possible_char(), aliyun_web_assistant.chat()])
-    # keyboard.add_hotkey('f9+1', lambda: [clear_possible_char(), tts_assistant.chat()])
-    keyboard.add_hotkey('f9+1', lambda: [clear_possible_char(), tts_assistant.text_to_speech()])
+    keyboard.add_hotkey('f9+o', lambda: [clear_possible_char(), openai_assistant.chat()])    # 调用OpenAI模型
+    keyboard.add_hotkey('f9+g', lambda: [clear_possible_char(), gemini_assistant.chat()])    # 调用Gemini模型
+    keyboard.add_hotkey('f9+x', lambda: [clear_possible_char(), grok_assistant.chat()])    # 调用Grok模型
+    keyboard.add_hotkey('f9+q', lambda: [clear_possible_char(), qwen_assistant.chat_thread()])    # 调用Qwen模型
+    keyboard.add_hotkey('f9+w', lambda: [clear_possible_char(), qwq_assistant.chat_thread()])    # 调用QWQ模型
+    keyboard.add_hotkey('f9+b', lambda: [clear_possible_char(), baidu_assistant.chat()])    # 调用Baidu模型
+    keyboard.add_hotkey('f9+z', lambda: [clear_possible_char(), zhipu_assistant.chat()])    # 调用Zhipu模型
+    keyboard.add_hotkey('f9+a', lambda: [clear_possible_char(), aliyun_assistant.chat()])    # 调用Aliyun模型
+    keyboard.add_hotkey('f9+l', lambda: [clear_possible_char(), aliyun_web_assistant.chat()])    # 调用Aliyun Web模型
+    keyboard.add_hotkey('f9+1', lambda: [clear_possible_char(), tts_client.start_tts()])    # 调用TTS
+    keyboard.add_hotkey('esc+1', lambda: tts_client.tts_stop())    # 停止TTS
+    keyboard.add_hotkey('f9+2', lambda: [clear_possible_char(), chat_with_tts_stream.start_with_tts()])    # 调用流式TTS
+    keyboard.add_hotkey('f9+3', lambda: [clear_possible_char(), chat_with_tts_no_stream.start_with_tts()])    # 调用非流式TTS
+    keyboard.add_hotkey('esc+2',lambda: [cancel_current_chat, chat_with_tts_stream.stop_with_tts()]) # 停止流式TTS
+    keyboard.add_hotkey('esc+3',lambda: [cancel_current_chat, chat_with_tts_no_stream.stop_with_tts()]) # 停止非流式TTS
     keyboard.add_hotkey('esc', cancel_current_chat)
     
     # 保持脚本运行，等待按键事件

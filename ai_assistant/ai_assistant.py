@@ -23,7 +23,7 @@ import asyncio
 import threading
 
 # 导入自定义模块
-from assistant import (
+from .assistant import (
     get_clipboard_content, type_result, cancel_current_chat, clear_possible_char,
     OpenAIAssistant, QwenAssistant, QWQAssistant, TTSClient, ChatWithTTSStream, ChatWithTTSNoStream
 )
@@ -33,7 +33,7 @@ from assistant import (
 # 主函数
 # =========================
 
-def main():
+def AI_Assistant():
     parser = argparse.ArgumentParser(description="AI助手脚本 - 通过不同快捷键调用不同AI模型")
     parser.add_argument("--web", action="store_true", help="启用Qwen的web模式，添加chat_type=search参数")
     parser.add_argument("--model", type=str, default="gemini-2.0-flash", help="指定OpenAI要调用的模型名称")
@@ -101,4 +101,4 @@ def main():
     print("程序已退出")
 
 if __name__ == "__main__":
-    main()
+    AI_Assistant()

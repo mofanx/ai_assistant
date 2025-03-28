@@ -44,7 +44,7 @@ class ChatWithTTSStream(AIAssistantBase):
         self.tts_client = TTSClient(tts_engine=tts_engine)
 
         # 分段标点符号
-        self.end_marks = ["。","！","？","!","?","\n"]
+        self.end_marks = ["。","！","？","!","?","\n\n\n"]
 
     def get_api_info(self):
         """获取API信息
@@ -136,13 +136,20 @@ class ChatWithTTSStream(AIAssistantBase):
                         self.response += content
 
                         # 如果缓存文本包含分段标点符号
-                        if any(mark in content_buffer for mark in self.end_marks):
-                            # 将缓存文本发送到队列
-                            self.segments.append(content_buffer)
-                            # 打印当前段落
-                            print(f"\n[段落 {len(self.segments)}]: {content_buffer}")
-                            # 清空缓存
-                            content_buffer = ""
+                        # 检查content_buffer中是否包含分段标点符号
+                        for mark in self.end_marks:
+                            if mark in content_buffer:
+                                # 找到第一个分段标点符号的位置
+                                end_pos = content_buffer.find(mark) + len(mark)
+                                # 截取第一个字符到分段标点符号的文本
+                                segment_text = content_buffer[:end_pos]
+                                # 将分段文本发送到队列
+                                self.segments.append(segment_text)
+                                # 打印当前段落
+                                print(f"\n[段落 {len(self.segments)}]: {segment_text}")
+                                # 保留剩余字符到content_buffer
+                                content_buffer = content_buffer[end_pos:]
+                                break
 
                 # 处理最后一个缓存
                 if content_buffer:
@@ -196,6 +203,7 @@ class ChatWithTTSStream(AIAssistantBase):
         try:
             # 处理所有文本片段
             for i, segment in enumerate(self.segments, 1):
+
                 if not segment:
                     print("这是一个空段落")
                     continue
@@ -203,7 +211,7 @@ class ChatWithTTSStream(AIAssistantBase):
                 segments_processed = True  # 标记有文本被处理
                     
                 print(f"\n[发送段落 {i}/{len(self.segments)}]: {segment}")
-                type_result(segment)  # 显示文本
+                type_result(segment)  # 显示文本                
                 
                 # 清理文本并直接放入分段队列
                 cleaned_text = self.tts_client.clean_text(segment)
@@ -245,10 +253,10 @@ class ChatWithTTSStream(AIAssistantBase):
                       self.tts_client.speech_task.empty() and 
                       not (pygame.mixer.get_init() and pygame.mixer.get_busy())):
                 
-                # 检查是否超时
-                if time.time() - start_time > max_wait_time:
-                    print("等待TTS处理超时，强制结束")
-                    break
+                # # 检查是否超时
+                # if time.time() - start_time > max_wait_time:
+                #     print("等待TTS处理超时，强制结束")
+                #     break
                 
                 # 定期检查是否需要停止
                 if keyboard.is_pressed('esc'):

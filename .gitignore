@@ -1,0 +1,6 @@
+ai_assistant.egg-info
+__pycache__
+.venv
+.eggs
+.eggs/
+.eggs/*

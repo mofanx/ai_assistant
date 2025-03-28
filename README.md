@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 1. 运行主脚本：
    ```bash
-   python ai_assisstant.py
+   python ai_assistant/ai_assistant.py
    ```
 
 2. 使用快捷键调用不同功能：
@@ -45,21 +45,24 @@ pip install -r requirements.txt
 ## 项目结构
 
 ```
-ai_assisstiant/
-├── assistant/                # 子模块目录
-│   ├── __init__.py           # 包初始化文件
-│   ├── base.py               # 基础类定义
-│   ├── openai_model.py       # OpenAI模型实现
-│   ├── qwen_model.py         # 通义千问模型实现
-│   ├── qwq_model.py          # QWQ模型实现
-│   ├── chat_with_tts_no_stream.py  # 非流式TTS对话实现
-│   ├── chat_with_tts_stream.py     # 流式TTS对话实现
-│   ├── openai_tts.py         # OpenAI TTS实现
-│   ├── tts_client.py         # TTS客户端实现
-│   └── tts_server.py         # TTS服务器实现
-├── ai_assisstant.py          # 主程序脚本
-└── README.md                 # 项目说明文件
-```
+ai_assistant/
+├── ai_assistant/
+│   ├── assistant/                # 子模块目录
+│   │   ├── __init__.py           # 包初始化文件
+│   │   ├── base.py               # 基础类定义
+│   │   ├── openai_model.py       # OpenAI模型实现
+│   │   ├── qwen_model.py         # 通义千问模型实现
+│   │   ├── qwq_model.py          # QWQ模型实现
+│   │   ├── chat_with_tts_no_stream.py  # 非流式TTS对话实现
+│   │   ├── chat_with_tts_stream.py     # 流式TTS对话实现
+│   │   ├── openai_tts.py         # OpenAI TTS实现
+│   │   ├── tts_client.py         # TTS客户端实现
+│   │   └── tts_server.py         # TTS服务器实现
+│   ├── __init__.py               # 包初始化文件
+│   └── ai_assistant.py           # 主程序脚本
+├── README.md                     # 项目说明文件
+├── requirements.txt              # 项目依赖文件
+└── pyproject.toml                # 项目配置文件
 
 ## 贡献指南
 

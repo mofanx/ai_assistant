@@ -15,6 +15,30 @@
 pip install -r requirements.txt
 ```
 
+## 配置环境变量
+
+   ```
+   # 需手动配置
+   NEW_API_URL：New API地址
+   NEW_API_KEY：New API密钥
+
+   ALIYUN_API_KEY：阿里云API密钥
+   ALIYUN_API_URL：阿里云API地址
+
+   OTHER_TTS_BASE_URL：其他TTS API地址
+   OTHER_TTS_API_KEY：其他TTS API密钥
+   TTS_SERVER_BASE_URL：TTS服务器地址
+
+
+   # 根据需要自行更改代码并配置
+   AI_STUDIO_API_KEY：百度 AI Studio API密钥
+   AI_STUDIO_API_URL：百度 AI Studio API地址
+
+   XAI_API_URL：XAI API地址
+   XAI_API_KEY：XAI API密钥
+   
+   ```
+
 ## 使用方法
 
 1. 运行主脚本：

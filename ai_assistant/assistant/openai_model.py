@@ -14,7 +14,7 @@ from .base import AIAssistantBase, get_clipboard_content, type_result, current_c
 class OpenAIAssistant(AIAssistantBase):
     """基于OpenAI API的AI助手实现"""
     
-    def __init__(self, model_name="gemini-2.0-flash", provider="default", enable_search=False ,enable_stream=True):
+    def __init__(self, model_name="gemini-2.0-flash", provider="default", enable_search=False, enable_stream=True, prompt=""):
         """初始化OpenAI助手
         
         Args:
@@ -35,7 +35,8 @@ class OpenAIAssistant(AIAssistantBase):
 
         self.enable_search = enable_search
         self.enable_stream = enable_stream
-
+        self.prompt = prompt
+    
     def get_api_info(self):
         """获取API信息
         
@@ -50,6 +51,7 @@ class OpenAIAssistant(AIAssistantBase):
         
         Args:
             content: 对话内容，如果为None则从剪贴板获取
+            prompt: 系统角色设定提示词，用于设置AI的行为和角色
             
         Returns:
             模型的回复内容或错误信息
@@ -84,9 +86,19 @@ class OpenAIAssistant(AIAssistantBase):
             print(f"正在与模型 {self.model_name} 对话，请稍候...")
             # 使用最新的API调用方法
 
+            # 准备消息列表，如果有系统提示则添加
+            messages = []
+            if self.prompt:
+                messages.append({"role": "system", "content": self.prompt})
+            messages.append({"role": "user", "content": user_input})
+
+            print("\n消息列表:")
+            print(messages)
+
+            # 准备请求参数
             params = {
                 "model": self.model_name,
-                "messages": [{"role": "user", "content": user_input}]
+                "messages": messages
             }
 
             if self.enable_search:

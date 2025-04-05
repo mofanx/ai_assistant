@@ -21,6 +21,9 @@ import keyboard
 import pygame
 import asyncio
 import threading
+import json
+import os
+from importlib import resources
 
 # 导入自定义模块
 from .assistant import (
@@ -28,6 +31,15 @@ from .assistant import (
     OpenAIAssistant, QwenAssistant, QWQAssistant, TTSClient, ChatWithTTSStream, ChatWithTTSNoStream
 )
 
+# 加载提示词
+with resources.open_text("ai_assistant", "prompts.json") as f:
+    prompts = json.load(f)
+
+# 提示词变量
+prompt_translate_to_english = prompts["prompts"]["translate_to_english"]
+prompt_translate_to_chinese = prompts["prompts"]["translate_to_chinese"]
+prompt_convert_to_json = prompts["prompts"]["convert_to_json"]
+prompt_convert_json_to_md = prompts["prompts"]["convert_json_to_md"]
 
 # =========================
 # 主函数
@@ -56,6 +68,12 @@ def AI_Assistant():
     tts_client = TTSClient(tts_engine="server")
     chat_with_tts_stream = ChatWithTTSStream(model_name="qwen-max", provider="aliyun", tts_engine="server")
     chat_with_tts_no_stream = ChatWithTTSNoStream(model_name="qwen-max", provider="aliyun", tts_engine="server")
+
+    # 初始化角色实例
+    instance_translate_to_english = OpenAIAssistant(model_name="gemini-2.0-flash", prompt=prompt_translate_to_english)
+    instance_translate_to_chinese = OpenAIAssistant(model_name="gemini-2.0-flash", prompt=prompt_translate_to_chinese)
+    instance_convert_to_json = OpenAIAssistant(model_name="gemini-2.0-flash", prompt=prompt_convert_to_json)
+    instance_convert_json_to_md = OpenAIAssistant(model_name="gemini-2.0-flash", prompt=prompt_convert_json_to_md)
     
 
 
@@ -96,6 +114,14 @@ def AI_Assistant():
     keyboard.add_hotkey('esc+3',lambda: [cancel_current_chat, chat_with_tts_no_stream.stop_with_tts()]) # 停止非流式TTS
     keyboard.add_hotkey('esc', cancel_current_chat)
     
+    # 添加角色实例快捷键
+    keyboard.add_hotkey('f8+e', lambda: [clear_possible_char(), instance_translate_to_english.chat()])    # 调用翻译到英文
+    keyboard.add_hotkey('f8+c', lambda: [clear_possible_char(), instance_translate_to_chinese.chat()])    # 调用翻译到中文
+    keyboard.add_hotkey('f8+j', lambda: [clear_possible_char(), instance_convert_to_json.chat()])    # 调用转换为JSON
+    keyboard.add_hotkey('f8+m', lambda: [clear_possible_char(), instance_convert_json_to_md.chat()])    # 调用转换为Markdown
+    
+
+
     # 保持脚本运行，等待按键事件
     keyboard.wait('esc+f9')  # 按下 Esc+F9 键退出程序
     print("程序已退出")

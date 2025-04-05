@@ -1,0 +1,8 @@
+{
+    "prompts": {
+      "translate_to_english": "将任何语言翻译成英文。",
+      "translate_to_chinese": "将任何语言翻译成中文。",
+      "convert_to_json": "将任意提示词转换成JSON格式。",
+      "convert_json_to_md": "将JSON格式的提示词转换成Markdown格式。"
+    }
+  }

@@ -30,6 +30,8 @@ from .assistant import (
     get_clipboard_content, type_result, cancel_current_chat, clear_possible_char,
     OpenAIAssistant, QwenAssistant, QWQAssistant, TTSClient, ChatWithTTSStream, ChatWithTTSNoStream
 )
+from .assistant.screenshot_ocr_llm import ScreenshotOCRLLM
+from .assistant.baimiao_ocr import BaimiaoScreenshotOCR
 
 # 加载提示词
 with resources.open_text("ai_assistant", "prompts.json") as f:
@@ -68,6 +70,10 @@ def AI_Assistant():
     tts_client = TTSClient(tts_engine="server")
     chat_with_tts_stream = ChatWithTTSStream(model_name="qwen-max", provider="aliyun", tts_engine="server")
     chat_with_tts_no_stream = ChatWithTTSNoStream(model_name="qwen-max", provider="aliyun", tts_engine="server")
+    
+    # 初始化截图OCR实例
+    screenshot_ocr = ScreenshotOCRLLM()
+    baimiao_ocr = BaimiaoScreenshotOCR()
 
     # 初始化角色实例
     instance_translate_to_english = OpenAIAssistant(model_name="gemini-2.0-flash", prompt=prompt_translate_to_english)
@@ -93,6 +99,8 @@ def AI_Assistant():
     print("esc+1: 停止TTS")    
     print("f9+2: 调用流式TTS")    
     print("f9+3: 调用非流式TTS")    
+    print("f8+0: 调用截图OCR识别")    
+    print("f8+9: 调用白描OCR识别")    
     print("esc: 取消当前对话输出")
     print("esc+f9: 退出程序")
     
@@ -110,6 +118,8 @@ def AI_Assistant():
     keyboard.add_hotkey('esc+1', lambda: tts_client.tts_stop())    # 停止TTS
     keyboard.add_hotkey('f9+2', lambda: [clear_possible_char(), chat_with_tts_stream.start_with_tts()])    # 调用流式TTS
     keyboard.add_hotkey('f9+3', lambda: [clear_possible_char(), chat_with_tts_no_stream.start_with_tts()])    # 调用非流式TTS
+    keyboard.add_hotkey('f8+0', lambda: [clear_possible_char(), screenshot_ocr.chat()])    # 调用截图OCR识别
+    keyboard.add_hotkey('f8+9', lambda: [clear_possible_char(), baimiao_ocr.chat()])    # 调用白描OCR识别
     keyboard.add_hotkey('esc+2',lambda: [cancel_current_chat, chat_with_tts_stream.stop_with_tts()]) # 停止流式TTS
     keyboard.add_hotkey('esc+3',lambda: [cancel_current_chat, chat_with_tts_no_stream.stop_with_tts()]) # 停止非流式TTS
     keyboard.add_hotkey('esc', cancel_current_chat)

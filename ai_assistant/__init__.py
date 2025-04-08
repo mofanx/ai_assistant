@@ -17,7 +17,9 @@ from .assistant import (
     OpenAIAssistant,
     TTSClient,
     ChatWithTTSStream,
-    ChatWithTTSNoStream
+    ChatWithTTSNoStream,
+    ScreenshotOCRLLM,
+    BaimiaoScreenshotOCR
 )
 
 from .ai_assistant import AI_Assistant
@@ -34,6 +36,9 @@ __all__ = [
     'TTSClient',
     'ChatWithTTSStream',
     'ChatWithTTSNoStream',
+    'ScreenshotOCRLLM',
+    'BaimiaoScreenshotOCR',
+    'BaimiaoScreenshotOCR',
     'AI_Assistant'
 ]
 

@@ -12,6 +12,9 @@ from .openai_model import OpenAIAssistant
 from .tts_client import TTSClient
 from .chat_with_tts_stream import ChatWithTTSStream
 from .chat_with_tts_no_stream import ChatWithTTSNoStream
+from .screenshot_ocr_llm import ScreenshotOCRLLM
+from .baimiao_ocr import BaimiaoScreenshotOCR
+
 
 
 
@@ -25,5 +28,7 @@ __all__ = [
     'OpenAIAssistant',
     'TTSClient',
     'ChatWithTTSStream',
-    'ChatWithTTSNoStream'
+    'ChatWithTTSNoStream',
+    'ScreenshotOCRLLM',
+    'BaimiaoScreenshotOCR'
 ]

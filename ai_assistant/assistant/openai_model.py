@@ -19,7 +19,7 @@ class OpenAIAssistant(AIAssistantBase):
         
         Args:
             model_name: 模型名称，默认为"gemini-2.0-flash"
-            provider: API提供商，可选值为"default"或"aliyun"等
+            provider: API提供商，可选值为"default"或"aliyun"，"xai"等
             enable_search: 是否启用联网搜索，默认为False
             enable_stream: 是否启用流式输出，默认为True
         """
@@ -30,6 +30,9 @@ class OpenAIAssistant(AIAssistantBase):
         elif provider == "aliyun":
             self.api_base = os.getenv("ALIYUN_API_URL")
             self.api_key = os.getenv("ALIYUN_API_KEY")
+        elif provider == "xai":
+            self.api_base = os.getenv("XAI_API_URL")
+            self.api_key = os.getenv("XAI_API_KEY")
         else:
             raise ValueError(f"不支持的API提供商: {provider}")
 

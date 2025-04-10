@@ -60,7 +60,7 @@ def AI_Assistant():
     qwq_assistant = QWQAssistant()
     openai_assistant = OpenAIAssistant(model_name=args.model)
     gemini_assistant = OpenAIAssistant(model_name="gemini-2.0-flash")
-    grok_assistant = OpenAIAssistant(model_name="grok-2")
+    grok_assistant = OpenAIAssistant(model_name="grok-3", provider="xai")
     baidu_assistant = OpenAIAssistant(model_name="ERNIE-Speed-128K")
     # zhipu_assistant = OpenAIAssistant(model_name="GLM-4-Plus")
     zhipu_assistant = OpenAIAssistant(model_name="GLM-4-Flash")
@@ -76,10 +76,10 @@ def AI_Assistant():
     baimiao_ocr = BaimiaoScreenshotOCR()
 
     # 初始化角色实例
-    instance_translate_to_english = OpenAIAssistant(model_name="gemini-2.0-flash", prompt=prompt_translate_to_english)
-    instance_translate_to_chinese = OpenAIAssistant(model_name="gemini-2.0-flash", prompt=prompt_translate_to_chinese)
-    instance_convert_to_json = OpenAIAssistant(model_name="gemini-2.0-flash", prompt=prompt_convert_to_json)
-    instance_convert_json_to_md = OpenAIAssistant(model_name="gemini-2.0-flash", prompt=prompt_convert_json_to_md)
+    instance_translate_to_english = OpenAIAssistant(model_name="grok-3", provider="xai",prompt=prompt_translate_to_english)
+    instance_translate_to_chinese = OpenAIAssistant(model_name="grok-3", provider="xai",prompt=prompt_translate_to_chinese)
+    instance_convert_to_json = OpenAIAssistant(model_name="grok-3", provider="xai",prompt=prompt_convert_to_json)
+    instance_convert_json_to_md = OpenAIAssistant(model_name="grok-3", provider="xai",prompt=prompt_convert_json_to_md)
     
 
 

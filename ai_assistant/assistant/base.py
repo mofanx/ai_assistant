@@ -24,13 +24,28 @@ def clear_possible_char():
     """清除可能由快捷键输入的字符"""
     # 模拟按下退格键删除可能输入的字符
     keyboard.send('backspace')
-    time.sleep(0.05)  # 短暂延迟确保退格键生效
+    time.sleep(0.1)  # 短暂延迟确保退格键生效
 
 
 def get_clipboard_content():
     """从剪贴板获取内容"""
     try:
-        clipboard_content = pyclip.paste().decode('utf-8')
+        # 获取剪贴板内容
+        clipboard_data = pyclip.paste()
+        
+        # 检查类型并正确解码
+        if isinstance(clipboard_data, bytes):
+            clipboard_content = clipboard_data.decode('utf-8', errors='replace')
+        else:
+            clipboard_content = str(clipboard_data)
+            
+        try:
+            # 尝试将unicode转义字符串还原为中文
+            if '\\u' in clipboard_content:
+                clipboard_content = clipboard_content.encode('utf-8').decode('unicode_escape')
+        except Exception as e:
+            print(f"无法还原unicode转义字符串: {e}")
+            return None
         
         # 检查剪贴板内容是否为空
         if not clipboard_content:
@@ -52,7 +67,9 @@ def type_result(text):
     if config_paste:
         # 保存剪切板
         try:
-            temp = pyclip.paste().decode('utf-8')
+            temp = pyclip.paste()
+            if isinstance(temp, bytes):
+                temp = temp.decode('utf-8')
         except:
             temp = ''
 

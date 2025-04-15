@@ -8,7 +8,7 @@ OpenAI模型实现模块
 import os
 from openai import OpenAI
 
-from .base import AIAssistantBase, get_clipboard_content, type_result, current_chat_active
+from .base import AIAssistantBase, get_clipboard_content, type_result, current_chat_active, stop_event
 
 
 class OpenAIAssistant(AIAssistantBase):
@@ -48,6 +48,26 @@ class OpenAIAssistant(AIAssistantBase):
         """
         masked_key = self.mask_sensitive_info(self.api_key)
         return self.api_base, masked_key
+
+    def chat_thread(self, is_web=None):
+        """创建一个新线程来执行OpenAI聊天功能
+        
+        Args:
+            is_web: 是否启用web模式，如果为None则使用实例的is_web属性
+        """
+        global current_chat_active
+        current_chat_active = True  # 重置状态为活跃
+        stop_event.clear()  # 清除停止事件
+        
+        # 如果传入了is_web参数，则使用传入的值，否则使用实例的is_web属性
+        if is_web is not None:
+            self.is_web = is_web
+        
+        # 创建一个新线程来执行聊天功能
+        import threading
+        chat_thread = threading.Thread(target=self.chat)
+        chat_thread.daemon = True  # 设置为守护线程，主线程结束时自动结束
+        chat_thread.start()
     
     def chat(self, content=None):
         """使用OpenAI API与模型对话
@@ -59,6 +79,7 @@ class OpenAIAssistant(AIAssistantBase):
         Returns:
             模型的回复内容或错误信息
         """
+
         # 检查API配置
         api_base, masked_key = self.get_api_info()
         print("OpenAI API地址:", api_base)
@@ -114,6 +135,11 @@ class OpenAIAssistant(AIAssistantBase):
                 full_reply = ""
                 print("\n模型回复:")
 
+                # 检查停止事件是否被设置
+                if stop_event.is_set() or not current_chat_active:
+                    print("\n对话已取消，停止输出")
+                    return
+
                 # 创建流式响应
                 response = client.chat.completions.create(**params)
 
@@ -124,10 +150,14 @@ class OpenAIAssistant(AIAssistantBase):
                         content = chunk.choices[0].delta.content
                         # 打印内容片段并添加到完整回复中
                         print(content, end="", flush=True)
-
-                        # 输出模型流式回复
-                        type_result(content)
-
+                        # 检查是否应该继续输出
+                        if not stop_event.is_set() and current_chat_active:
+                            # 输出模型流式回复
+                            type_result(content)
+                        else:
+                            # 停止输出
+                            print("\n对话已取消，停止输出")
+                            return
                         full_reply += content
 
                 # 输出完整回复

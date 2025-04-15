@@ -105,15 +105,15 @@ def AI_Assistant():
     print("esc+f9: 退出程序")
     
     # 注册快捷键
-    keyboard.add_hotkey('f9+o', lambda: [clear_possible_char(), openai_assistant.chat()])    # 调用OpenAI模型
-    keyboard.add_hotkey('f9+g', lambda: [clear_possible_char(), gemini_assistant.chat()])    # 调用Gemini模型
-    keyboard.add_hotkey('f9+x', lambda: [clear_possible_char(), grok_assistant.chat()])    # 调用Grok模型
+    keyboard.add_hotkey('f9+o', lambda: [clear_possible_char(), openai_assistant.chat_thread()])    # 调用OpenAI模型
+    keyboard.add_hotkey('f9+g', lambda: [clear_possible_char(), gemini_assistant.chat_thread()])    # 调用Gemini模型
+    keyboard.add_hotkey('f9+x', lambda: [clear_possible_char(), grok_assistant.chat_thread()])    # 调用Grok模型
     keyboard.add_hotkey('f9+q', lambda: [clear_possible_char(), qwen_assistant.chat_thread()])    # 调用Qwen模型
     keyboard.add_hotkey('f9+w', lambda: [clear_possible_char(), qwq_assistant.chat_thread()])    # 调用QWQ模型
-    keyboard.add_hotkey('f9+b', lambda: [clear_possible_char(), baidu_assistant.chat()])    # 调用Baidu模型
-    keyboard.add_hotkey('f9+z', lambda: [clear_possible_char(), zhipu_assistant.chat()])    # 调用Zhipu模型
-    keyboard.add_hotkey('f9+a', lambda: [clear_possible_char(), aliyun_assistant.chat()])    # 调用Aliyun模型
-    keyboard.add_hotkey('f9+l', lambda: [clear_possible_char(), aliyun_web_assistant.chat()])    # 调用Aliyun Web模型
+    keyboard.add_hotkey('f9+b', lambda: [clear_possible_char(), baidu_assistant.chat_thread()])    # 调用Baidu模型
+    keyboard.add_hotkey('f9+z', lambda: [clear_possible_char(), zhipu_assistant.chat_thread()])    # 调用Zhipu模型
+    keyboard.add_hotkey('f9+a', lambda: [clear_possible_char(), aliyun_assistant.chat_thread()])    # 调用Aliyun模型
+    keyboard.add_hotkey('f9+l', lambda: [clear_possible_char(), aliyun_web_assistant.chat_thread()])    # 调用Aliyun Web模型
     keyboard.add_hotkey('f9+1', lambda: [clear_possible_char(), tts_client.start_tts()])    # 调用TTS
     keyboard.add_hotkey('esc+1', lambda: tts_client.tts_stop())    # 停止TTS
     keyboard.add_hotkey('f9+2', lambda: [clear_possible_char(), chat_with_tts_stream.start_with_tts()])    # 调用流式TTS
@@ -125,10 +125,10 @@ def AI_Assistant():
     keyboard.add_hotkey('esc', cancel_current_chat)
     
     # 添加角色实例快捷键
-    keyboard.add_hotkey('f8+e', lambda: [clear_possible_char(), instance_translate_to_english.chat()])    # 调用翻译到英文
-    keyboard.add_hotkey('f8+c', lambda: [clear_possible_char(), instance_translate_to_chinese.chat()])    # 调用翻译到中文
-    keyboard.add_hotkey('f8+j', lambda: [clear_possible_char(), instance_convert_to_json.chat()])    # 调用转换为JSON
-    keyboard.add_hotkey('f8+m', lambda: [clear_possible_char(), instance_convert_json_to_md.chat()])    # 调用转换为Markdown
+    keyboard.add_hotkey('f8+e', lambda: [clear_possible_char(), instance_translate_to_english.chat_thread()])    # 调用翻译到英文
+    keyboard.add_hotkey('f8+c', lambda: [clear_possible_char(), instance_translate_to_chinese.chat_thread()])    # 调用翻译到中文
+    keyboard.add_hotkey('f8+j', lambda: [clear_possible_char(), instance_convert_to_json.chat_thread()])    # 调用转换为JSON
+    keyboard.add_hotkey('f8+m', lambda: [clear_possible_char(), instance_convert_json_to_md.chat_thread()])    # 调用转换为Markdown
     
 
 

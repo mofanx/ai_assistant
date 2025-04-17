@@ -87,7 +87,9 @@ def type_result(text):
 
         # 还原剪贴板
         if config_restore:
-            time.sleep(0.05)
+            # 等待粘贴操作完成
+            paste_delay = max(0.1, min(len(text) / 5000, 1.0))  # 根据文本长度动态调整延时
+            time.sleep(paste_delay)
             pyclip.copy(temp)
 
     # 模拟打印

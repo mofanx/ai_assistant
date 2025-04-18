@@ -2,21 +2,21 @@
 
 ## 项目简介
 
-ai_assistant 是一个基于 Python 的 AI 助手，支持多模型对话、TTS 语音等多种功能，适合个人效率提升及 AI 应用开发。
+multi_ai_assistant 是一个基于 Python 的 AI 助手，支持多模型对话、TTS 语音等多种功能，适合个人效率提升及 AI 应用开发。
 
 ## 安装方法
 
 推荐使用 pip 安装（PyPI 发布后）：
 
 ```bash
-pip install ai_assistant
+pip install multi_ai_assistant
 ```
 
 或从源码安装：
 
 ```bash
-git clone https://github.com/mofanx/ai_assistant.git
-cd ai_assistant
+git clone https://github.com/mofanx/multi_ai_assistant.git
+cd multi_ai_assistant
 pip install .
 ```
 
@@ -25,13 +25,13 @@ pip install .
 安装后可通过命令行启动：
 
 ```bash
-ai_assistant
+multi_ai_assistant
 ```
 
 或在代码中调用：
 
 ```python
-from ai_assistant import AI_Assistant
+from multi_ai_assistant import AI_Assistant
 assistant = AI_Assistant()
 assistant.run()
 ```
@@ -130,7 +130,7 @@ pip install -r requirements.txt
 
 1. 运行主脚本：
    ```bash
-   python ai_assistant/ai_assistant.py
+   python multi_ai_assistant/ai_assistant.py
    ```
 
 2. 按上述快捷键即可调用相应模型或功能。
@@ -139,7 +139,7 @@ pip install -r requirements.txt
    - `--web` 启用 Qwen Web 模式
    - `--model` 指定 OpenAI 调用的模型名称
 
-4. 也可通过 `ai_assistant` 命令或在代码中调用 `AI_Assistant()` 启动。
+4. 也可通过 `multi_ai_assistant` 命令或在代码中调用 `AI_Assistant()` 启动。
    | f9+1         | 调用TTS                |
    | esc+1        | 停止TTS                |
    | f9+2         | 调用流式TTS            |
@@ -150,7 +150,7 @@ pip install -r requirements.txt
 ## 项目结构
 
 ```
-ai_assistant/
+multi_ai_assistant/
 ├── ai_assistant/
 │   ├── assistant/                # 各类模型与功能模块
 │   │   ├── __init__.py           # 子包初始化
@@ -172,11 +172,11 @@ ai_assistant/
 ├── requirements.txt              # 依赖列表
 ├── pyproject.toml                # 构建与元数据配置
 ├── LICENSE                       # 开源协议文件
-└── ai_assistant.egg-info/        # 构建生成的元数据目录（可忽略）
+└── multi_ai_assistant.egg-info/  # 构建生成的元数据目录（可忽略）   
 ```
 
-- 代码主入口为 `ai_assistant/ai_assistant/ai_assistant.py`。
-- 所有核心模型、TTS、OCR、工具均在 `ai_assistant/ai_assistant/assistant/` 下实现。
+- 代码主入口为 `multi_ai_assistant/ai_assistant/ai_assistant.py`。
+- 所有核心模型、TTS、OCR、工具均在 `multi_ai_assistant/ai_assistant/assistant/` 下实现。
 - 依赖与元数据分别在 `requirements.txt` 和 `pyproject.toml` 中声明。
 - `prompts.json` 为对话和功能的提示词模板。
 

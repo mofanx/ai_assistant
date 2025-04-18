@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "multi-ai-assistant"
-version = "1.0.5"
+version = "1.0.6"
 description = "A Python-based AI assistant project"
 authors = [
     { name="mofanx"}
@@ -23,4 +23,4 @@ dependencies = [
 ]
 
 [project.scripts]
-ai_assistant = "ai_assistant.ai_assistant:AI_Assistant"
+multi_ai_assistant = "ai_assistant.ai_assistant:AI_Assistant"

@@ -1,6 +1,22 @@
-ai_assistant.egg-info
-__pycache__
-.venv
-.eggs
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 构建产物
+build/
+dist/
+*.egg-info/
 .eggs/
-.eggs/*
+
+# 虚拟环境
+.venv/
+
+# 编辑器/IDE
+.vscode/
+*.swp
+*.bak
+*.log
+
+# macOS
+.DS_Store
+.venv/*

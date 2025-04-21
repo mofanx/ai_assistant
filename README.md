@@ -119,7 +119,8 @@ pip install -r requirements.txt
 | f9+3      | 非流式 TTS 语音合成     |
 | f8+0      | 截图 OCR 识别           |
 | f8+9      | 白描 OCR 识别           |
-| f8+p      | Piclab 图床上传         |
+| f8+p      | 上传剪贴板图片到Piclab  |
+| f8+o      | 调用截图并上传到Piclab  |
 | esc+2     | 停止流式 TTS            |
 | esc+3     | 停止非流式 TTS          |
 | esc       | 取消当前对话            |

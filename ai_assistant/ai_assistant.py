@@ -114,6 +114,8 @@ def AI_Assistant():
     print("f9+3: 调用非流式TTS")    
     print("f8+0: 调用截图OCR识别")    
     print("f8+9: 调用白描OCR识别")    
+    print("f8+p: 将剪贴板图片上传到Piclab")    
+    print("f8+o: 调用截图并上传到Piclab")
     print("esc: 取消当前对话输出")
     print("esc+f9: 退出程序")
     

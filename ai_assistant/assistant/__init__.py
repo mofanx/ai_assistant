@@ -15,6 +15,7 @@ from .chat_with_tts_no_stream import ChatWithTTSNoStream
 from .screenshot_ocr_llm import ScreenshotOCRLLM
 from .baimiao_ocr import BaimiaoScreenshotOCR
 from .piclab_uploader import PiclabUploader
+from .screenshot_piclab_uploader import screenshot_and_upload_piclab
 
 
 
@@ -31,5 +32,6 @@ __all__ = [
     'ChatWithTTSStream',
     'ChatWithTTSNoStream',
     'ScreenshotOCRLLM',
-    'BaimiaoScreenshotOCR'
+    'BaimiaoScreenshotOCR',
+    'screenshot_and_upload_piclab'
 ]

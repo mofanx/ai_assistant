@@ -20,7 +20,8 @@ from .assistant import (
     ChatWithTTSNoStream,
     ScreenshotOCRLLM,
     BaimiaoScreenshotOCR,
-    PiclabUploader
+    PiclabUploader,
+    screenshot_and_upload_piclab
 )
 
 from .ai_assistant import AI_Assistant
@@ -40,7 +41,8 @@ __all__ = [
     'ScreenshotOCRLLM',
     'BaimiaoScreenshotOCR',
     'AI_Assistant',
-    'PiclabUploader'
+    'PiclabUploader',
+    'screenshot_and_upload_piclab'
 ]
 
 print("AI助手已导入")

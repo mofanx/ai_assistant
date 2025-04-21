@@ -56,31 +56,42 @@ def AI_Assistant():
     # 解析命令行参数
     args = parser.parse_args()
     
+    # 支持从环境变量读取各渠道模型名
+    model_openai = os.getenv("MODEL_OPENAI", "GPT-4o mini")
+    model_gemini = os.getenv("MODEL_GEMINI", "gemini-2.0-flash")
+    model_qwen = os.getenv("MODEL_QWEN", "qwen-turbo")
+    model_qwq = os.getenv("MODEL_QWQ", "qwq-default")
+    model_grok = os.getenv("MODEL_GROK", "grok-3")
+    model_baidu = os.getenv("MODEL_BAIDU", "ERNIE-Speed-128K")
+    model_zhipu = os.getenv("MODEL_ZHIPU", "GLM-4-Flash")
+    model_aliyun = os.getenv("MODEL_ALIYUN", "qwen-max")
+    model_aliyun_web = os.getenv("MODEL_ALIYUN_WEB", "qwen-max")
+    model_tts = os.getenv("MODEL_TTS", "qwen-max")
+    model_translate = os.getenv("MODEL_TRANSLATE", "grok-3")
+
     # 初始化模型实例
     qwen_assistant = QwenAssistant(is_web=args.web)
     qwq_assistant = QWQAssistant()
-    openai_assistant = OpenAIAssistant(model_name=args.model)
-    gemini_assistant = OpenAIAssistant(model_name="gemini-2.0-flash")
-    grok_assistant = OpenAIAssistant(model_name="grok-3", provider="xai")
-    baidu_assistant = OpenAIAssistant(model_name="ERNIE-Speed-128K")
-    # zhipu_assistant = OpenAIAssistant(model_name="GLM-4-Plus")
-    zhipu_assistant = OpenAIAssistant(model_name="GLM-4-Flash")
-    # aliyun_assistant = AliyunAssistant(model_name="qwen-max")
-    aliyun_assistant = OpenAIAssistant(model_name="qwen-max", provider="aliyun")
-    aliyun_web_assistant = OpenAIAssistant(model_name="qwen-max", provider="aliyun", enable_search=True)
+    openai_assistant = OpenAIAssistant(model_name=model_openai)
+    gemini_assistant = OpenAIAssistant(model_name=model_gemini)
+    grok_assistant = OpenAIAssistant(model_name=model_grok, provider="xai")
+    baidu_assistant = OpenAIAssistant(model_name=model_baidu)
+    zhipu_assistant = OpenAIAssistant(model_name=model_zhipu)
+    aliyun_assistant = OpenAIAssistant(model_name=model_aliyun, provider="aliyun")
+    aliyun_web_assistant = OpenAIAssistant(model_name=model_aliyun_web, provider="aliyun", enable_search=True)
     tts_client = TTSClient(tts_engine="server")
-    chat_with_tts_stream = ChatWithTTSStream(model_name="qwen-max", provider="aliyun", tts_engine="server")
-    chat_with_tts_no_stream = ChatWithTTSNoStream(model_name="qwen-max", provider="aliyun", tts_engine="server")
+    chat_with_tts_stream = ChatWithTTSStream(model_name=model_tts, provider="aliyun", tts_engine="server")
+    chat_with_tts_no_stream = ChatWithTTSNoStream(model_name=model_tts, provider="aliyun", tts_engine="server")
     
     # 初始化截图OCR实例
     screenshot_ocr = ScreenshotOCRLLM()
     baimiao_ocr = BaimiaoScreenshotOCR()
 
     # 初始化角色实例
-    instance_translate_to_english = OpenAIAssistant(model_name="grok-3", provider="xai",prompt=prompt_translate_to_english)
-    instance_translate_to_chinese = OpenAIAssistant(model_name="grok-3", provider="xai",prompt=prompt_translate_to_chinese)
-    instance_convert_to_json = OpenAIAssistant(model_name="grok-3", provider="xai",prompt=prompt_convert_to_json)
-    instance_convert_json_to_md = OpenAIAssistant(model_name="grok-3", provider="xai",prompt=prompt_convert_json_to_md)
+    instance_translate_to_english = OpenAIAssistant(model_name=model_translate, provider="xai",prompt=prompt_translate_to_english)
+    instance_translate_to_chinese = OpenAIAssistant(model_name=model_translate, provider="xai",prompt=prompt_translate_to_chinese)
+    instance_convert_to_json = OpenAIAssistant(model_name=model_grok, provider="xai",prompt=prompt_convert_to_json)
+    instance_convert_json_to_md = OpenAIAssistant(model_name=model_grok, provider="xai",prompt=prompt_convert_json_to_md)
     
 
 

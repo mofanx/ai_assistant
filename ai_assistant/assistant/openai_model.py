@@ -13,17 +13,20 @@ from .base import AIAssistantBase, get_clipboard_content, type_result, current_c
 class OpenAIAssistant(AIAssistantBase):
     """基于OpenAI API的AI助手实现"""
     
-    def __init__(self, model_name="gemini-2.0-flash", provider="default", enable_search=False, enable_stream=True, prompt=""):
+    def __init__(self, model_name="GPT-4o mini", provider="default", enable_search=False, enable_stream=True, prompt=""):
         """初始化OpenAI助手
         
         Args:
-            model_name: 模型名称，默认为"gemini-2.0-flash"
-            provider: API提供商，可选值为"default"或"aliyun"，"xai"等
+            model_name: 模型名称，默认为"GPT-4o mini"
+            provider: API提供商，可选值为"default"、"new_api"、"aliyun"、"xai"、"google"等
             enable_search: 是否启用联网搜索，默认为False
             enable_stream: 是否启用流式输出，默认为True
         """
         super().__init__(model_name)
         if provider == "default":
+            self.api_base = os.getenv("OPENAI_API_BASE")
+            self.api_key = os.getenv("OPENAI_API_KEY")
+        elif provider == "new_api":
             self.api_base = os.getenv("NEW_API_URL")
             self.api_key = os.getenv("NEW_API_KEY")
         elif provider == "aliyun":
@@ -32,6 +35,9 @@ class OpenAIAssistant(AIAssistantBase):
         elif provider == "xai":
             self.api_base = os.getenv("XAI_API_URL")
             self.api_key = os.getenv("XAI_API_KEY")
+        elif provider == "google":
+            self.api_base = os.getenv("GEMINI_API_URL")
+            self.api_key = os.getenv("GEMINI_API_KEY")
         else:
             raise ValueError(f"不支持的API提供商: {provider}")
 

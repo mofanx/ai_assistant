@@ -14,6 +14,7 @@ from .chat_with_tts_stream import ChatWithTTSStream
 from .chat_with_tts_no_stream import ChatWithTTSNoStream
 from .screenshot_ocr_llm import ScreenshotOCRLLM
 from .baimiao_ocr import BaimiaoScreenshotOCR
+from .piclab_uploader import PiclabUploader
 
 
 

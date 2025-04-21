@@ -36,6 +36,13 @@ assistant = AI_Assistant()
 assistant.run()
 ```
 
+### 快捷键说明
+
+- F8+P：上传剪贴板图片或图片链接到 Piclab 图床，自动复制 Markdown 链接
+- F8+0：截图后 OCR 识别
+- F8+9：白描 OCR 识别
+- 其它快捷键详见 ai_assistant.py 注释
+
 ## 依赖说明
 
 - keyboard
@@ -65,6 +72,7 @@ assistant.run()
 - 提供 TTS 语音合成功能，支持普通、流式、非流式三种模式
 - 支持截图 OCR 识别、白描 OCR 识别
 - 支持多角色快捷键：中英文互译、内容转 JSON、JSON 转 Markdown
+- 支持 Piclab 图床上传：一键上传剪贴板图片或图片链接，自动复制 Markdown 链接到剪贴板（快捷键 F8+P）
 - 通过丰富快捷键快速调用不同模型和功能
 - 支持随时取消当前对话、停止 TTS、退出程序
 

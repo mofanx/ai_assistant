@@ -32,6 +32,7 @@ from .assistant import (
 )
 from .assistant.screenshot_ocr_llm import ScreenshotOCRLLM
 from .assistant.baimiao_ocr import BaimiaoScreenshotOCR
+from .assistant.piclab_uploader import run_on_hotkey as piclab_run_on_hotkey
 
 # 加载提示词
 with resources.open_text("ai_assistant", "prompts.json") as f:
@@ -120,6 +121,7 @@ def AI_Assistant():
     keyboard.add_hotkey('f9+3', lambda: [clear_possible_char(), chat_with_tts_no_stream.start_with_tts()])    # 调用非流式TTS
     keyboard.add_hotkey('f8+0', lambda: [clear_possible_char(), screenshot_ocr.chat()])    # 调用截图OCR识别
     keyboard.add_hotkey('f8+9', lambda: [clear_possible_char(), baimiao_ocr.chat()])    # 调用白描OCR识别
+    keyboard.add_hotkey('f8+p', lambda: piclab_run_on_hotkey())    # Piclab 图床上传
     keyboard.add_hotkey('esc+2',lambda: [cancel_current_chat, chat_with_tts_stream.stop_with_tts()]) # 停止流式TTS
     keyboard.add_hotkey('esc+3',lambda: [cancel_current_chat, chat_with_tts_no_stream.stop_with_tts()]) # 停止非流式TTS
     keyboard.add_hotkey('esc', cancel_current_chat)

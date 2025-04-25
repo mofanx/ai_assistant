@@ -65,9 +65,11 @@ class PiclabUploader:
                 pyclip.copy(markdown)
                 print(f"上传成功，Markdown链接已复制到剪贴板：\n{markdown}")
                 self.send_system_notification("Piclab上传成功", "Markdown链接已复制到剪贴板")
+                return markdown
             else:
                 print("上传成功，但未返回Markdown链接。响应：", data)
                 self.send_system_notification("Piclab上传成功", "未返回Markdown链接")
+                return None
         except Exception as e:
             print(f"上传失败: {e}")
             print("服务器返回:", getattr(resp, 'text', '无响应内容'))
@@ -121,23 +123,23 @@ class PiclabUploader:
         uploader = cls(args.api_url, args.api_key)
         try:
             if args.image:
-                uploader.upload_image(args.image)
+                markdown = uploader.upload_image(args.image)
             else:
                 image_path_or_url = cls.get_clipboard_image_or_url()
-                uploader.upload_image(image_path_or_url)
+                markdown = uploader.upload_image(image_path_or_url)
         except Exception as e:
             print(f"上传失败: {e}")
+        return markdown
 
-# 快捷键绑定功能
-
-def run_on_hotkey():
-    def handler():
-        try:
-            PiclabUploader.main()
-        except Exception as e:
-            print(f"快捷键上传失败: {e}")
-    keyboard.add_hotkey('f8+p', handler)
-    print('已绑定快捷键 F8+P，按下即可上传剪贴板图片或图片链接...')
+    @classmethod
+    def run_on_hotkey(cls):
+        def handler():
+            try:
+                markdown = cls.main()
+            except Exception as e:
+                print(f"快捷键上传失败: {e}")
+        keyboard.add_hotkey('f8+p', handler)
+        print('已绑定快捷键 F8+P，按下即可上传剪贴板图片或图片链接...')
 # 注意：不再调用 keyboard.wait()，由主程序统一管理等待逻辑。
 
 if __name__ == '__main__':
@@ -145,4 +147,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1 and not (len(sys.argv) == 2 and sys.argv[1].startswith('-')):
         PiclabUploader.main()
     else:
-        run_on_hotkey()
+        PiclabUploader.run_on_hotkey()

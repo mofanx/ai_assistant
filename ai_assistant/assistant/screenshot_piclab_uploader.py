@@ -47,7 +47,7 @@ def screenshot_and_upload_piclab():
     api_key = os.getenv('PICLAB_API_KEY', 'your_api_key1')
     uploader = PiclabUploader(api_url, api_key)
     try:
-        uploader.upload_image(screenshot_path)
+        markdown = uploader.upload_image(screenshot_path)
         send_system_notification("截图上传成功", "Markdown链接已复制到剪贴板")
     except Exception as e:
         print(f"截图上传失败: {e}")

@@ -51,12 +51,7 @@ assistant.run()
 
 本项目基于 MIT 协议开源，详见 LICENSE 文件。
 
-## 联系方式
-
-作者：mofanx
-邮箱：yanwuning@live.cn
-
----
+## 项目说明
 
 本项目是一个通过快捷键调用不同AI模型进行对话的Python脚本，支持多种AI模型和TTS（文本转语音）功能。
 
@@ -67,6 +62,7 @@ assistant.run()
 - 支持截图 OCR 识别、白描 OCR 识别
 - 支持多角色快捷键：中英文互译、内容转 JSON、JSON 转 Markdown
 - 支持 Piclab 图床上传：一键上传剪贴板图片或图片链接，自动复制 Markdown 链接到剪贴板（快捷键 F8+P）
+- 支持 AI 绘画：调用阿里云、Gemini、XAI 生成图片
 - 通过丰富快捷键快速调用不同模型和功能
 - 支持随时取消当前对话、停止 TTS、退出程序
 
@@ -121,6 +117,9 @@ pip install -r requirements.txt
 | f8+9      | 白描 OCR 识别           |
 | f8+p      | 上传剪贴板图片到Piclab  |
 | f8+o      | 调用截图并上传到Piclab  |
+| f8+a      | 调用阿里云生成图片      |
+| f8+g      | 调用 Gemini 生成图片    |
+| f8+x      | 调用 XAI 生成图片       |
 | esc+2     | 停止流式 TTS            |
 | esc+3     | 停止非流式 TTS          |
 | esc       | 取消当前对话            |
@@ -168,7 +167,11 @@ multi_ai_assistant/
 │   │   ├── qwq_model.py          # QWQ 模型实现
 │   │   ├── screenshot_ocr_llm.py # 截图 OCR 识别
 │   │   ├── tts_client.py         # TTS 客户端
-│   │   └── tts_server.py         # TTS 服务器
+│   │   ├── tts_server.py         # TTS 服务器
+│   │   ├── piclab_uploader.py    # Piclab 图床上传
+│   │   ├── aliyun_img_gen.py     # 阿里云生成图片
+│   │   ├── gemini_img_gen.py     # Gemini 生成图片
+│   │   └── xai_img_gen.py        # XAI 生成图片
 │   ├── __init__.py               # 包初始化文件
 │   ├── ai_assistant.py           # 主程序脚本（快捷键入口等）
 │   └── prompts.json              # 预设提示词配置

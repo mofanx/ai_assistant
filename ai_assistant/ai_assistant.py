@@ -32,8 +32,9 @@ from .assistant import (
 )
 from .assistant.screenshot_ocr_llm import ScreenshotOCRLLM
 from .assistant.baimiao_ocr import BaimiaoScreenshotOCR
-from .assistant.piclab_uploader import PiclabUploader
+from .assistant.piclab_uploader import PiclabUploader, upload_clipboard_image
 from .assistant.screenshot_piclab_uploader import screenshot_and_upload_piclab
+from .assistant.image_generator import ImageGenerator
 
 # 加载提示词
 with resources.open_text("ai_assistant", "prompts.json") as f:
@@ -94,7 +95,10 @@ def AI_Assistant():
     instance_convert_to_json = OpenAIAssistant(model_name=model_grok, provider="xai",prompt=prompt_convert_to_json)
     instance_convert_json_to_md = OpenAIAssistant(model_name=model_grok, provider="xai",prompt=prompt_convert_json_to_md)
     
-
+    # 初始化AI绘画实例
+    aliyun_img_gen = ImageGenerator(provider='aliyun_image', model='wanx2.1-t2i-turbo')
+    gemini_img_gen = ImageGenerator(provider='gemini', model='gemini-2.0-flash-exp-image-generation')
+    xai_img_gen = ImageGenerator(provider='xai', model='grok-2-image')
 
     
     print("=== AI助手已启动 ===")
@@ -136,7 +140,7 @@ def AI_Assistant():
     keyboard.add_hotkey('f8+0', lambda: [clear_possible_char(), screenshot_ocr.chat()])    # 调用截图OCR识别
     keyboard.add_hotkey('f8+9', lambda: [clear_possible_char(), baimiao_ocr.chat()])    # 调用白描OCR识别
     keyboard.add_hotkey('f8+o', lambda: [clear_possible_char(), screenshot_and_upload_piclab()])    # 截图并上传Piclab
-    keyboard.add_hotkey('f8+p', lambda: [clear_possible_char(), PiclabUploader.run_on_hotkey()])    # Piclab 图床上传
+    keyboard.add_hotkey('f8+p', lambda: [clear_possible_char(), upload_clipboard_image()])    # Piclab 图床上传
     keyboard.add_hotkey('esc+2',lambda: [cancel_current_chat, chat_with_tts_stream.stop_with_tts()]) # 停止流式TTS
     keyboard.add_hotkey('esc+3',lambda: [cancel_current_chat, chat_with_tts_no_stream.stop_with_tts()]) # 停止非流式TTS
     keyboard.add_hotkey('esc', cancel_current_chat)
@@ -147,7 +151,10 @@ def AI_Assistant():
     keyboard.add_hotkey('f8+j', lambda: [clear_possible_char(), instance_convert_to_json.chat_thread()])    # 调用转换为JSON
     keyboard.add_hotkey('f8+m', lambda: [clear_possible_char(), instance_convert_json_to_md.chat_thread()])    # 调用转换为Markdown
     
-
+    # 添加AI绘画快捷键
+    keyboard.add_hotkey('f8+a', lambda: [aliyun_img_gen()])    # 调用阿里云生成图片
+    keyboard.add_hotkey('f8+g', lambda: [gemini_img_gen()])    # 调用 Gemini 生成图片
+    keyboard.add_hotkey('f8+x', lambda: [xai_img_gen()])    # 调用 XAI 生成图片
 
     # 保持脚本运行，等待按键事件
     keyboard.wait('esc+f9')  # 按下 Esc+F9 键退出程序

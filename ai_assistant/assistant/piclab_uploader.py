@@ -10,9 +10,10 @@ from urllib.parse import urlparse
 from datetime import datetime
 
 class PiclabUploader:
-    def __init__(self, api_url, api_key):
-        self.api_url = api_url
-        self.api_key = api_key
+    def __init__(self, api_url=None, api_key=None):
+        import os
+        self.api_url = api_url or os.getenv('PICLAB_API_URL', 'http://localhost:3000/api/upload')
+        self.api_key = api_key or os.getenv('PICLAB_API_KEY', 'your_api_key1')
 
     @staticmethod
     def send_system_notification(title, message):
@@ -42,6 +43,10 @@ class PiclabUploader:
 
     def upload_image(self, image_path_or_url):
         import mimetypes
+        # 新增：支持 markdown 图片格式自动提取 URL
+        url_from_md = self.extract_image_url(image_path_or_url)
+        if url_from_md:
+            image_path_or_url = url_from_md
         if self.is_url(image_path_or_url):
             file_path = self.download_image(image_path_or_url)
             remove_after = True
@@ -87,6 +92,20 @@ class PiclabUploader:
             return False
 
     @staticmethod
+    def extract_image_url(text):
+        """
+        支持从 markdown 图片语法中提取图片 URL，如：
+        ![alt](url) 或 ![](url)
+        若不是 markdown 格式，返回 None
+        """
+        import re
+        # 匹配 ![xxx](url) 或 ![](url)
+        match = re.match(r'!\[[^\]]*\]\((https?://[^\)]+)\)', text.strip())
+        if match:
+            return match.group(1)
+        return None
+
+    @staticmethod
     def download_image(url):
         resp = requests.get(url, stream=True)
         resp.raise_for_status()
@@ -95,13 +114,17 @@ class PiclabUploader:
             for chunk in resp.iter_content(chunk_size=8192):
                 tmp.write(chunk)
             return tmp.name
-
+    
     @staticmethod
     def get_clipboard_image_or_url():
         val = pyclip.paste()
         if isinstance(val, bytes):
             val = val.decode('utf-8', errors='ignore')
         val = val.strip()
+        # 新增：支持 markdown 图片格式自动提取 URL
+        url_from_md = PiclabUploader.extract_image_url(val)
+        if url_from_md:
+            return url_from_md
         if val.startswith('http://') or val.startswith('https://'):
             return val
         if os.path.exists(val):
@@ -116,10 +139,6 @@ class PiclabUploader:
         parser.add_argument('--api-key', default=os.getenv('PICLAB_API_KEY', 'your_api_key1'), help='API密钥')
         args = parser.parse_args()
 
-        # 调试输出
-        # print(f"[调试] 当前API上传地址: {args.api_url}")
-        # print(f"[调试] 当前API密钥: {args.api_key}")
-        
         uploader = cls(args.api_url, args.api_key)
         try:
             if args.image:
@@ -129,22 +148,31 @@ class PiclabUploader:
                 markdown = uploader.upload_image(image_path_or_url)
         except Exception as e:
             print(f"上传失败: {e}")
+            markdown = None
         return markdown
 
     @classmethod
-    def run_on_hotkey(cls):
+    def run_on_hotkey(cls, hotkey='f8+p'):
         def handler():
             try:
-                markdown = cls.main()
+                cls.main()
             except Exception as e:
                 print(f"快捷键上传失败: {e}")
-        keyboard.add_hotkey('f8+p', handler)
-        print('已绑定快捷键 F8+P，按下即可上传剪贴板图片或图片链接...')
-# 注意：不再调用 keyboard.wait()，由主程序统一管理等待逻辑。
+        keyboard.add_hotkey(hotkey, handler)
+        print(f'已绑定快捷键 {hotkey.upper()}，按下即可上传剪贴板图片或图片链接...')
+    
+def upload_clipboard_image():
+    PiclabUploader().upload_image(PiclabUploader.get_clipboard_image_or_url())
+
 
 if __name__ == '__main__':
     import sys
     if len(sys.argv) > 1 and not (len(sys.argv) == 2 and sys.argv[1].startswith('-')):
+        # 用法1：命令行上传
         PiclabUploader.main()
     else:
-        PiclabUploader.run_on_hotkey()
+        # 用法2：绑定快捷键上传，仅供参考
+        PiclabUploader.run_on_hotkey('f8+p')
+        import keyboard
+        keyboard.wait('esc+f9')  # 按下 Esc+F9 退出
+
